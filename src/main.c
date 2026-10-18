@@ -205,7 +205,7 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
             if (place == 6 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
-            if (place == VIRIDIAN || place == PEWTER)
+            if (player_has_starter && (place == VIRIDIAN || place == PEWTER))
                 rdpq_text_print(NULL, 1, 12, 176, "C-UP: HEAL TEAM");
             if (place == 8 && badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Mt. Moon is just ahead.");
@@ -216,8 +216,8 @@ int main(void) {
                 const char *outcomes[] = {"", "WILD POKEMON DEFEATED!", "GOT AWAY SAFELY!", "FAINTED! RESTORED HP.", "TEAM RESTED AT POKE CENTER!"};
                 rdpq_text_print(NULL, 1, 12, 111, outcomes[last_wild_result]);
             }
-            snprintf(line, sizeof(line), "WILD WINS: %d", wild_wins);
-            rdpq_text_print(NULL, 1, 204, 58, line);
+            snprintf(line, sizeof(line), "WINS: %d", wild_wins);
+            rdpq_text_print(NULL, 1, 244, 58, line);
         } else if (place == 1) {
             rdpq_text_print(NULL, 1, 12, 82, "Professor: Choose a partner!");
             rdpq_text_print(NULL, 1, 12, 109, starters[starter]);
