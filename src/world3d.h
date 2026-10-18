@@ -51,9 +51,9 @@ static void world3d_draw(int scene, float cx, float cz) {
                 RGBA32(71,112,178,255),RGBA32(218,210,176,255),RGBA32(171,170,146,255));
     }
     /* Player represented by stacked 3D blocks until a mesh is added. */
-    iso_box(0,0,0,0.9f,1.6f,0.9f,cx,cz,
+    iso_box(cx,0,cz,0.9f,1.6f,0.9f,cx,cz,
             RGBA32(40,81,190,255),RGBA32(37,71,164,255),RGBA32(30,55,128,255));
-    iso_box(0,1.6f,0,0.9f,0.75f,0.9f,cx,cz,
+    iso_box(cx,1.6f,cz,0.9f,0.75f,0.9f,cx,cz,
             RGBA32(56,60,69,255),RGBA32(233,190,147,255),RGBA32(201,160,122,255));
 }
 #endif
