@@ -8,6 +8,7 @@ static int next_area(int area,const game_progress_t *p) {
  if(area==AREA_RIVAL)return p->rival_defeated?AREA_ROUTE1:AREA_RIVAL;
  if(area==AREA_PEWTER||area==AREA_GYM)return p->boulder_badge?AREA_ROUTE3:AREA_GYM;
  if(area==AREA_ROUTE3)return p->boulder_badge?AREA_MOON:AREA_ROUTE3;
+ if(area<AREA_PALLET)return AREA_PALLET;
  return area<AREA_MOON?area+1:AREA_MOON;
 }
 #endif
