@@ -1,5 +1,6 @@
 #include <libdragon.h>
 #include <stdio.h>
+#include "world3d.h"
 
 /* Playable navigation mockup. Scenes and battles are placeholders. */
 static const char *scenes[] = {
@@ -47,19 +48,9 @@ int main(void) {
         rdpq_attach(disp, NULL);
         rdpq_clear((color_t){15, 28, 52, 255});
         if (scene != 1 && scene != 2 && scene != 7 && scene != 9) {
-            rdpq_set_mode_fill((color_t){40, 110, 56, 255});
-            rdpq_fill_rectangle(8, 86, 312, 174);
-            rdpq_set_mode_fill((color_t){184, 165, 108, 255});
-            rdpq_fill_rectangle(139, 86, 181, 174);
-            rdpq_set_mode_fill((color_t){195, 88, 70, 255});
-            rdpq_fill_rectangle(34, 98, 94, 143);
-            rdpq_set_mode_fill((color_t){235, 222, 190, 255});
-            rdpq_fill_rectangle(38, 112, 90, 143);
-            rdpq_set_mode_fill((color_t){40, 70, 165, 255});
-            rdpq_fill_rectangle(px - 4, py - 8, px + 4, py + 5);
-            rdpq_set_mode_fill((color_t){240, 198, 156, 255});
-            rdpq_fill_rectangle(px - 3, py - 12, px + 3, py - 7);
-            rdpq_set_mode_standard();
+            float camx = (px - 154) * 0.06f;
+            float camz = (py - 130) * 0.06f;
+            world3d_draw(scene, camx, camz);
         }
         rdpq_text_print(NULL, 1, 16, 24, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 16, 56, scenes[scene]);
