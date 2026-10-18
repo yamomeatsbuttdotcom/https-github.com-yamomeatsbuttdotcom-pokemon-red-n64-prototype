@@ -29,6 +29,14 @@ int main(void) {
     rdpq_init();
     joypad_init();
     rdpq_text_register_font(1, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_VAR));
+    /* Diagnostic first frame: prove display and RDP boot before drawing 3D. */
+    surface_t *boot_display = display_get();
+    rdpq_attach(boot_display, NULL);
+    rdpq_clear(RGBA32(12, 44, 80, 255));
+    rdpq_set_mode_standard();
+    rdpq_text_print(NULL, 1, 24, 100, "PALLET TO MT. MOON");
+    rdpq_text_print(NULL, 1, 24, 120, "BOOT OK - LOADING WORLD");
+    rdpq_detach_show();
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
