@@ -31,6 +31,7 @@ int main(void) {
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
+    int show_hint = 0;
     float x = 0, z = 8;
     camera_t cam = {0,8};
     char line[64];
@@ -41,11 +42,12 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
         if (game_is_world(place)) {
+            if (p.b) show_hint = !show_hint;
             float nx = x, nz = z;
             if (h.d_left) nx -= 0.15f;
             if (h.d_right) nx += 0.15f;
@@ -71,7 +73,7 @@ int main(void) {
             if (p.d_right) starter = (starter + 1) % 3;
             if (p.a) {
                 place = RIVAL; hp = starter_stats(starter).hp; enemy_hp = enemy_stats(0).hp;
-                battle_turn = 0; battle_finished = 0; battle_choice = 0;
+                battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
             }
         } else if (game_is_battle(place)) {
             if (!battle_finished) {
@@ -87,7 +89,7 @@ int main(void) {
                     } else {
                         hp = starter_stats(starter).hp;
                         enemy_hp = enemy_stats(place == BROCK).hp;
-                        battle_finished = 0; battle_turn = 0; battle_choice = 0;
+                        battle_finished = 0; battle_turn = 0; battle_choice = 0; special_pp = 5;
                     }
                 } else {
                     int used_turn = 1;
@@ -134,8 +136,9 @@ int main(void) {
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
             if (place == 8 && badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Mt. Moon is just ahead.");
+            if (show_hint) rdpq_text_print(NULL, 1, 12, 92, area_hint[place]);
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
-            rdpq_text_print(NULL, 1, 12, 207, "North gate + A: Continue");
+            rdpq_text_print(NULL, 1, 12, 207, "North + A: Next  B: Hint");
         } else if (place == 1) {
             rdpq_text_print(NULL, 1, 12, 82, "Professor: Choose a partner!");
             rdpq_text_print(NULL, 1, 12, 109, starters[starter]);
