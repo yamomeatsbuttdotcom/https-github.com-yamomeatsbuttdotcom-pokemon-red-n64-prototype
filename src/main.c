@@ -181,7 +181,7 @@ int main(void) {
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
         if (wild_active) {
             battle_creature(75,91,starter,1);
-            battle_creature(251,80,3,0);
+            battle_wild_creature(251,80,wild_foe.name);
             snprintf(line,sizeof(line),"WILD %s Lv.%d",wild_foe.name,wild_foe.level);
             rdpq_text_print(NULL,1,12,65,line);
             snprintf(line,sizeof(line),"YOUR HP %d / %d",hp,starter_stats(starter).hp);
