@@ -36,6 +36,7 @@ int main(void) {
     int wild_active = 0, wild_hp = 0, wild_max_hp = 0, wild_wins = 0;
     int last_wild_result = 0, result_frames = 0;
     int trainer_message = 0;
+    int encounter_number = 0;
     encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
     camera_t cam = {0,8};
@@ -47,7 +48,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0; trainer_message = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0; trainer_message = 0; encounter_number = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -74,7 +75,8 @@ int main(void) {
                     if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
                         && area_steps >= 65) {
                         area_steps = 0;
-                        wild_foe = area_encounter(place, walk_steps);
+                        wild_foe = area_encounter(place, encounter_number * 65);
+                        encounter_number++;
                         wild_hp = wild_foe.hp; wild_max_hp = wild_hp;
                         wild_active = 1;
                         battle_choice = 0; battle_turn = 0;
