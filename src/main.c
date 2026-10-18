@@ -190,6 +190,8 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
             if (place == 6 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
+            if (place == VIRIDIAN || place == PEWTER)
+                rdpq_text_print(NULL, 1, 12, 176, "C-UP: HEAL TEAM");
             if (place == 8 && badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Mt. Moon is just ahead.");
             if (show_hint) rdpq_text_print(NULL, 1, 12, 92, area_hint[place]);
