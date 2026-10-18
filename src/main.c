@@ -30,7 +30,7 @@ int main(void) {
     rdpq_text_register_font(1, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_VAR));
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
-    int battle_choice = 0, potions = 3;
+    int battle_choice = 0, potions = 3, special_pp = 5;
     float x = 0, z = 8;
     camera_t cam = {0,8};
     char line[64];
@@ -41,7 +41,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3;
+            battle_choice = 0; potions = 3; special_pp = 5;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -63,7 +63,7 @@ int main(void) {
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
                     hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
-                    battle_turn = 0; battle_finished = 0; battle_choice = 0;
+                    battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
                 }
             }
         } else if (place == 1) {
@@ -100,8 +100,11 @@ int main(void) {
                     } else {
                         int damage = battle_damage(starter_stats(starter).attack,
                                                    enemy_stats(place == BROCK).defense);
-                        if (battle_choice == 1) damage += 2;
-                        enemy_hp -= damage;
+                        if (battle_choice == 1) {
+                            if (special_pp > 0) { damage += 2; special_pp--; }
+                            else used_turn = 0;
+                        }
+                        if (used_turn) enemy_hp -= damage;
                         if (enemy_hp <= 0) { enemy_hp = 0; battle_finished = 1; }
                     }
                     if (used_turn) {
@@ -155,7 +158,7 @@ int main(void) {
                 const char *actions[] = {"ATTACK", "SPECIAL", "POTION"};
                 snprintf(line, sizeof(line), "< %s >  A: SELECT", actions[battle_choice]);
                 rdpq_text_print(NULL, 1, 12, 160, line);
-                snprintf(line, sizeof(line), "POTIONS: %d  TURN: %d", potions, battle_turn);
+                snprintf(line, sizeof(line), "POTION %d  SPECIAL PP %d", potions, special_pp);
                 rdpq_text_print(NULL, 1, 12, 177, line);
             }
         } else {
