@@ -63,7 +63,7 @@ int main(void) {
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
                     hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
-                    battle_turn = 0; battle_finished = 0; battle_choice = 0; battle_choice = 0;
+                    battle_turn = 0; battle_finished = 0; battle_choice = 0;
                 }
             }
         } else if (place == 1) {
@@ -71,7 +71,7 @@ int main(void) {
             if (p.d_right) starter = (starter + 1) % 3;
             if (p.a) {
                 place = RIVAL; hp = starter_stats(starter).hp; enemy_hp = enemy_stats(0).hp;
-                battle_turn = 0; battle_finished = 0;
+                battle_turn = 0; battle_finished = 0; battle_choice = 0;
             }
         } else if (game_is_battle(place)) {
             if (!battle_finished) {
@@ -119,7 +119,7 @@ int main(void) {
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
         rdpq_clear(RGBA32(23, 38, 62, 255));
-        if (game_is_world(place)) world3d_draw(place, cam.x, cam.z);
+        if (game_is_world(place)) world3d_draw(place, x, z, cam.x, cam.z);
         if (place == 1) lab_draw(starter);
         if (place == 9) moon_gate_draw();
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
