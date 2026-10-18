@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "world3d.h"
 #include "game_rules.h"
+#include "battle_rules.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -19,7 +20,7 @@ int main(void) {
     rdpq_init();
     joypad_init();
     rdpq_text_register_font(1, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_VAR));
-    int place = 0, starter = 0, hp = 24, enemy_hp = 0;
+    int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     float x = 0, z = 8;
     char line[64];
@@ -28,7 +29,7 @@ int main(void) {
         joypad_buttons_t p = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         joypad_buttons_t h = joypad_get_buttons_held(JOYPAD_PORT_1);
         if (p.start) {
-            place = 0; starter = 0; hp = 24; enemy_hp = 0;
+            place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
             reset_position(&x, &z);
         }
@@ -62,7 +63,7 @@ int main(void) {
                 place = game_next_place(place, badge);
                 reset_position(&x, &z);
                 if (game_is_battle(place)) {
-                    hp = 24; enemy_hp = place == 2 ? 18 : 30;
+                    hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
                     battle_turn = 0; battle_finished = 0;
                 }
             }
@@ -70,7 +71,7 @@ int main(void) {
             if (p.d_left) starter = (starter + 2) % 3;
             if (p.d_right) starter = (starter + 1) % 3;
             if (p.a) {
-                place = 2; hp = 24; enemy_hp = 18;
+                place = RIVAL; hp = starter_stats(starter).hp; enemy_hp = enemy_stats(0).hp;
                 battle_turn = 0; battle_finished = 0;
             }
         } else if (game_is_battle(place)) {
@@ -81,15 +82,15 @@ int main(void) {
                         if (place == 7) badge = 1;
                         place++; reset_position(&x, &z);
                     } else {
-                        hp = 24; enemy_hp = place == 2 ? 18 : 30;
+                        hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
                         battle_finished = 0; battle_turn = 0;
                     }
                 } else {
-                    enemy_hp -= starter == 1 ? 7 : 6;
+                    enemy_hp -= battle_damage(starter_stats(starter).attack, enemy_stats(place == BROCK).defense);
                     battle_turn++;
                     if (enemy_hp <= 0) { enemy_hp = 0; battle_finished = 1; }
                     else {
-                        hp -= place == 7 ? 5 : 4;
+                        hp -= battle_damage(enemy_stats(place == BROCK).attack, starter_stats(starter).defense);
                         if (hp <= 0) { hp = 0; battle_finished = 1; }
                     }
                 }
