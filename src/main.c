@@ -37,6 +37,7 @@ int main(void) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
             reset_position(&x, &z);
+            camera_snap(&cam, x, z);
         }
         if (game_is_world(place)) {
             float nx = x, nz = z;
@@ -105,7 +106,7 @@ int main(void) {
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
         rdpq_clear(RGBA32(23, 38, 62, 255));
-        if (game_is_world(place)) world3d_draw(place, x, z);
+        if (game_is_world(place)) world3d_draw(place, cam.x, cam.z);
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
         if (game_is_world(place)) {
