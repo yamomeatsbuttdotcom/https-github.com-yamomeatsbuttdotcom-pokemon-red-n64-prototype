@@ -87,6 +87,7 @@ int main(void) {
             if (!wild_active && p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
                 area_steps = 0;
+                result_frames = 0;
                 reset_position(&x, &z);
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
@@ -123,7 +124,7 @@ int main(void) {
             if (p.d_right) starter = (starter + 1) % 3;
             if (p.a) {
                 place = RIVAL; hp = starter_stats(starter).hp; enemy_hp = enemy_stats(0).hp;
-                battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
+                battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5; trainer_message = 0;
             }
         } else if (!p.start && game_is_battle(place)) {
             if (!battle_finished) {
@@ -135,7 +136,8 @@ int main(void) {
                     if (hp > 0) {
                         if (place == RIVAL) rival_won = 1;
                         if (place == BROCK) badge = 1;
-                        place++; reset_position(&x, &z); camera_snap(&cam, x, z);
+                        place++; area_steps = 0; result_frames = 0;
+                        reset_position(&x, &z); camera_snap(&cam, x, z);
                     } else {
                         hp = starter_stats(starter).hp;
                         enemy_hp = enemy_stats(place == BROCK).hp;
