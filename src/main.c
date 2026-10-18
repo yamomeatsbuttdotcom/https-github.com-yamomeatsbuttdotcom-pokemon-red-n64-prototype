@@ -52,7 +52,7 @@ int main(void) {
         }
         if (!p.start && game_is_world(place) && !wild_active) {
             if (p.b) show_hint = !show_hint;
-            if (place == VIRIDIAN && p.c_up) {
+            if ((place == VIRIDIAN || place == PEWTER) && p.c_up) {
                 hp = starter_stats(starter).hp;
                 special_pp = 5;
                 last_wild_result = 4; result_frames = 120;
@@ -196,7 +196,7 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North + A: Next  B: Hint");
             if (result_frames > 0) {
-                const char *outcomes[] = {"", "WILD POKEMON DEFEATED!", "GOT AWAY SAFELY!", "FAINTED! RESTORED HP.", "TEAM RESTED AT VIRIDIAN!"};
+                const char *outcomes[] = {"", "WILD POKEMON DEFEATED!", "GOT AWAY SAFELY!", "FAINTED! RESTORED HP.", "TEAM RESTED AT POKE CENTER!"};
                 rdpq_text_print(NULL, 1, 12, 111, outcomes[last_wild_result]);
             }
             snprintf(line, sizeof(line), "WILD WINS: %d", wild_wins);
