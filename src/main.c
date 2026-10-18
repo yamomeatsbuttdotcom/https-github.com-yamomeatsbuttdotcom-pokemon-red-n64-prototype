@@ -30,6 +30,7 @@ int main(void) {
     rdpq_text_register_font(1, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_VAR));
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
+    int battle_choice = 0, potions = 3;
     float x = 0, z = 8;
     camera_t cam = {0,8};
     char line[64];
@@ -40,6 +41,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
+            battle_choice = 0; potions = 3;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -61,7 +63,7 @@ int main(void) {
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
                     hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
-                    battle_turn = 0; battle_finished = 0;
+                    battle_turn = 0; battle_finished = 0; battle_choice = 0; battle_choice = 0;
                 }
             }
         } else if (place == 1) {
@@ -72,23 +74,43 @@ int main(void) {
                 battle_turn = 0; battle_finished = 0;
             }
         } else if (game_is_battle(place)) {
+            if (!battle_finished) {
+                if (p.d_left || p.d_up) battle_choice = (battle_choice + 2) % 3;
+                if (p.d_right || p.d_down) battle_choice = (battle_choice + 1) % 3;
+            }
             if (p.a) {
                 if (battle_finished) {
                     if (hp > 0) {
-                        if (place == 2) rival_won = 1;
-                        if (place == 7) badge = 1;
+                        if (place == RIVAL) rival_won = 1;
+                        if (place == BROCK) badge = 1;
                         place++; reset_position(&x, &z); camera_snap(&cam, x, z);
                     } else {
-                        hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
-                        battle_finished = 0; battle_turn = 0;
+                        hp = starter_stats(starter).hp;
+                        enemy_hp = enemy_stats(place == BROCK).hp;
+                        battle_finished = 0; battle_turn = 0; battle_choice = 0;
                     }
                 } else {
-                    enemy_hp -= battle_damage(starter_stats(starter).attack, enemy_stats(place == BROCK).defense);
-                    battle_turn++;
-                    if (enemy_hp <= 0) { enemy_hp = 0; battle_finished = 1; }
-                    else {
-                        hp -= battle_damage(enemy_stats(place == BROCK).attack, starter_stats(starter).defense);
-                        if (hp <= 0) { hp = 0; battle_finished = 1; }
+                    int used_turn = 1;
+                    if (battle_choice == 2) {
+                        if (potions > 0 && hp < starter_stats(starter).hp) {
+                            hp += 12;
+                            if (hp > starter_stats(starter).hp) hp = starter_stats(starter).hp;
+                            potions--;
+                        } else used_turn = 0;
+                    } else {
+                        int damage = battle_damage(starter_stats(starter).attack,
+                                                   enemy_stats(place == BROCK).defense);
+                        if (battle_choice == 1) damage += 2;
+                        enemy_hp -= damage;
+                        if (enemy_hp <= 0) { enemy_hp = 0; battle_finished = 1; }
+                    }
+                    if (used_turn) {
+                        battle_turn++;
+                        if (!battle_finished) {
+                            hp -= battle_damage(enemy_stats(place == BROCK).attack,
+                                                starter_stats(starter).defense);
+                            if (hp <= 0) { hp = 0; battle_finished = 1; }
+                        }
                     }
                 }
             }
@@ -126,12 +148,18 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 128, line);
             ui_meter(12, 137, 138, hp, starter_stats(starter).hp, RGBA32(84,205,94,255));
             ui_meter(166, 137, 138, enemy_hp, enemy_stats(place == BROCK).hp, RGBA32(220,117,72,255));
-            ui_hp_bar(205,99,hp,24);
+            ui_hp_bar(205,99,hp,starter_stats(starter).hp);
             ui_hp_bar(205,122,enemy_hp,place==2?18:30);
             if (battle_finished)
                 rdpq_text_print(NULL, 1, 12, 160, hp ? "YOU WIN! A: CONTINUE" : "FAINTED! A: RETRY");
             else
-                rdpq_text_print(NULL, 1, 12, 160, "A: ATTACK");
+            {
+                const char *actions[] = {"ATTACK", "SPECIAL", "POTION"};
+                snprintf(line, sizeof(line), "< %s >  A: SELECT", actions[battle_choice]);
+                rdpq_text_print(NULL, 1, 12, 160, line);
+                snprintf(line, sizeof(line), "POTIONS: %d  TURN: %d", potions, battle_turn);
+                rdpq_text_print(NULL, 1, 12, 177, line);
+            }
         } else {
             rdpq_text_print(NULL, 1, 12, 95, "MT. MOON ENTRANCE BLOCKED");
             rdpq_text_print(NULL, 1, 12, 119, "END OF PROTOTYPE");
