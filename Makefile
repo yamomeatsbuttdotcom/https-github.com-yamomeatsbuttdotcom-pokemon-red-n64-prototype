@@ -1,17 +1,23 @@
+ROMNAME := pallet_mt_moon
 BUILD_DIR = build
-ROMNAME = pallet_mt_moon
-ROM_TITLE = "Pallet to Mt Moon"
+
+ifeq ($(N64_INST),)
+  $(error N64_INST is not set)
+endif
 include $(N64_INST)/include/n64.mk
 
-OBJS = $(BUILD_DIR)/main.o
-
 all: $(ROMNAME).z64
+.PHONY: all
 
-$(ROMNAME).z64: $(BUILD_DIR)/$(ROMNAME).elf
-
+C_FILES := $(shell find src -name '*.c')
+OBJS := $(addprefix $(BUILD_DIR)/,$(C_FILES:.c=.o))
 $(BUILD_DIR)/$(ROMNAME).elf: $(OBJS)
+$(ROMNAME).z64: N64_ROM_TITLE = "Pallet to Mt Moon"
 
 clean:
-	rm -rf $(BUILD_DIR) *.z64
+	$(RM) -r $(BUILD_DIR) *.z64
+.PHONY: clean
 
-.PHONY: all clean
+ifneq ($(wildcard $(BUILD_DIR)),)
+  -include $(shell find $(BUILD_DIR) -name '*.d')
+endif
