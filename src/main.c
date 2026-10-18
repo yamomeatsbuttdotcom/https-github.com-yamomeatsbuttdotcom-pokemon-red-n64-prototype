@@ -129,8 +129,8 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
             if (place == 6 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
-            if (place == 8 && !badge)
-                rdpq_text_print(NULL, 1, 12, 75, "Badge required.");
+            if (place == 8 && badge)
+                rdpq_text_print(NULL, 1, 12, 75, "Mt. Moon is just ahead.");
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North gate + A: Continue");
         } else if (place == 1) {
