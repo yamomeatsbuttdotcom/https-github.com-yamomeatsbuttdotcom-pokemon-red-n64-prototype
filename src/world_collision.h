@@ -5,6 +5,7 @@ static int collision_box(float x,float z,float bx,float bz,float w,float d,float
  return x>bx-margin && x<bx+w+margin && z>bz-margin && z<bz+d+margin;
 }
 static int world_blocked(int scene,float x,float z) {
+ if (x < -10 || x > 10 || z < -10 || z > 10) return 1;
  if (scene==0 || scene==4 || scene==6) {
    if (collision_box(x,z,-9,-5,6,5,0.45f)) return 1;
    if (collision_box(x,z,5,4,4,4,0.45f)) return 1;
