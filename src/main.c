@@ -120,6 +120,7 @@ int main(void) {
         rdpq_attach(disp, NULL);
         rdpq_clear(RGBA32(23, 38, 62, 255));
         if (game_is_world(place)) world3d_draw(place, x, z, cam.x, cam.z);
+        rdpq_set_mode_standard();
         if (place == 1) lab_draw(starter);
         if (place == 9) moon_gate_draw();
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
@@ -130,7 +131,6 @@ int main(void) {
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
             if (place == 8 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Badge required.");
-            ui_panel(8,178,312,216);
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North gate + A: Continue");
         } else if (place == 1) {
@@ -148,8 +148,6 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 128, line);
             ui_meter(12, 137, 138, hp, starter_stats(starter).hp, RGBA32(84,205,94,255));
             ui_meter(166, 137, 138, enemy_hp, enemy_stats(place == BROCK).hp, RGBA32(220,117,72,255));
-            ui_hp_bar(205,99,hp,starter_stats(starter).hp);
-            ui_hp_bar(205,122,enemy_hp,place==2?18:30);
             if (battle_finished)
                 rdpq_text_print(NULL, 1, 12, 160, hp ? "YOU WIN! A: CONTINUE" : "FAINTED! A: RETRY");
             else
