@@ -22,6 +22,10 @@ int main(void) {
     assert(area_encounter(ROUTE3,65).level==5);
     assert(area_encounter(ROUTE1,-1).level==3);
     assert(world_blocked(PALLET,-6,-3));
+    assert(world_blocked(PALLET,11,0));
+    assert(world_blocked(PALLET,0,-11));
+    assert(!world_blocked(ROUTE1,0,-8));
+    assert(!world_blocked(FOREST,0,-8));
     assert(!world_blocked(PALLET,0,5));
     assert(world_blocked(FOREST,-8,-9));
     game_progress_t progress = {0};
