@@ -10,6 +10,7 @@
 #include "world_collision.h"
 #include "battle_visuals.h"
 #include "lab_visuals.h"
+#include "end_visuals.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -98,6 +99,7 @@ int main(void) {
         rdpq_clear(RGBA32(23, 38, 62, 255));
         if (game_is_world(place)) world3d_draw(place, cam.x, cam.z);
         if (place == 1) lab_draw(starter);
+        if (place == 9) moon_gate_draw();
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
         if (game_is_world(place)) {
