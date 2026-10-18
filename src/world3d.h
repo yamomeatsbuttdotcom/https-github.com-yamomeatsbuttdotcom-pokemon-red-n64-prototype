@@ -50,7 +50,7 @@ static void iso_flower(float x,float z,float cx,float cz) {
     iso_box(x,0,z,0.45f,0.25f,0.45f,cx,cz,
             RGBA32(240,194,66,255),RGBA32(219,156,51,255),RGBA32(198,143,49,255));
 }
-static void world3d_draw(int scene, float cx, float cz) {
+static void world3d_draw(int scene, float px, float pz, float cx, float cz) {
     rdpq_set_mode_standard();
     rdpq_mode_combiner(RDPQ_COMBINER_FLAT);
     /* World-space grassy platform and raised road. */
@@ -119,27 +119,27 @@ static void world3d_draw(int scene, float cx, float cz) {
     const color_t skin = RGBA32(235,184,137,255);
     const color_t red = RGBA32(207,50,51,255);
     const color_t yellow = RGBA32(220,177,61,255);
-    iso_box(cx-0.10f,0,cz+0.05f,0.42f,0.30f,0.36f,cx,cz,
+    iso_box(px-0.10f,0,pz+0.05f,0.42f,0.30f,0.36f,cx,cz,
             RGBA32(71,56,49,255),RGBA32(62,49,42,255),RGBA32(55,44,40,255));
-    iso_box(cx+0.48f,0,cz+0.05f,0.42f,0.30f,0.36f,cx,cz,
+    iso_box(px+0.48f,0,pz+0.05f,0.42f,0.30f,0.36f,cx,cz,
             RGBA32(71,56,49,255),RGBA32(62,49,42,255),RGBA32(55,44,40,255));
-    iso_box(cx,0.28f,cz,0.36f,0.78f,0.55f,cx,cz,denim,denim,RGBA32(37,61,130,255));
-    iso_box(cx+0.52f,0.28f,cz,0.36f,0.78f,0.55f,cx,cz,denim,denim,RGBA32(37,61,130,255));
-    iso_box(cx-0.02f,1.05f,cz-0.04f,0.95f,0.95f,0.65f,cx,cz,
+    iso_box(px,0.28f,pz,0.36f,0.78f,0.55f,cx,cz,denim,denim,RGBA32(37,61,130,255));
+    iso_box(px+0.52f,0.28f,pz,0.36f,0.78f,0.55f,cx,cz,denim,denim,RGBA32(37,61,130,255));
+    iso_box(px-0.02f,1.05f,pz-0.04f,0.95f,0.95f,0.65f,cx,cz,
             red,red,RGBA32(153,36,39,255));
-    iso_box(cx-0.31f,1.09f,cz,0.28f,0.84f,0.46f,cx,cz,
+    iso_box(px-0.31f,1.09f,pz,0.28f,0.84f,0.46f,cx,cz,
             red,red,RGBA32(148,34,37,255));
-    iso_box(cx+0.94f,1.09f,cz,0.28f,0.84f,0.46f,cx,cz,
+    iso_box(px+0.94f,1.09f,pz,0.28f,0.84f,0.46f,cx,cz,
             red,red,RGBA32(148,34,37,255));
-    iso_box(cx-0.30f,1.01f,cz,0.26f,0.23f,0.45f,cx,cz,skin,skin,skin);
-    iso_box(cx+0.94f,1.01f,cz,0.26f,0.23f,0.45f,cx,cz,skin,skin,skin);
-    iso_box(cx+0.06f,1.96f,cz,0.78f,0.80f,0.68f,cx,cz,
+    iso_box(px-0.30f,1.01f,pz,0.26f,0.23f,0.45f,cx,cz,skin,skin,skin);
+    iso_box(px+0.94f,1.01f,pz,0.26f,0.23f,0.45f,cx,cz,skin,skin,skin);
+    iso_box(px+0.06f,1.96f,pz,0.78f,0.80f,0.68f,cx,cz,
             skin,skin,RGBA32(199,145,105,255));
-    iso_box(cx,2.64f,cz-0.06f,0.93f,0.29f,0.83f,cx,cz,
+    iso_box(px,2.64f,pz-0.06f,0.93f,0.29f,0.83f,cx,cz,
             red,red,RGBA32(143,33,39,255));
-    iso_box(cx-0.10f,2.64f,cz+0.64f,1.13f,0.12f,0.37f,cx,cz,
+    iso_box(px-0.10f,2.64f,pz+0.64f,1.13f,0.12f,0.37f,cx,cz,
             red,red,RGBA32(143,33,39,255));
-    iso_box(cx+0.12f,1.15f,cz-0.43f,0.67f,0.78f,0.43f,cx,cz,
+    iso_box(px+0.12f,1.15f,pz-0.43f,0.67f,0.78f,0.43f,cx,cz,
             yellow,yellow,RGBA32(166,122,37,255));
 }
 #endif
