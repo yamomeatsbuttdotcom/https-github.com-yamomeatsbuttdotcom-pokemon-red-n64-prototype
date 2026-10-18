@@ -86,10 +86,23 @@ int main(void) {
                 }
             }
         } else if (wild_active) {
-            if (p.b) wild_active = 0;
-            if (p.a) {
+            if (p.b) {
+                wild_active = 0;
+            } else if (p.a) {
                 wild_hp -= battle_damage(starter_stats(starter).attack, 2);
-                if (wild_hp <= 0) wild_active = 0;
+                if (wild_hp <= 0) {
+                    wild_hp = 0;
+                    wild_active = 0;
+                } else {
+                    hp -= battle_damage(4 + wild_foe.level / 2,
+                                        starter_stats(starter).defense);
+                    if (hp <= 0) {
+                        hp = starter_stats(starter).hp;
+                        wild_active = 0;
+                        reset_position(&x, &z);
+                        camera_snap(&cam, x, z);
+                    }
+                }
             }
         } else if (place == 1) {
             if (p.d_left) starter = (starter + 2) % 3;
