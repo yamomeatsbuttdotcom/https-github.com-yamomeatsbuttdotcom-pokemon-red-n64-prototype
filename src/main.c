@@ -1,6 +1,9 @@
 #include <libdragon.h>
 #include <stdio.h>
 #include "world3d.h"
+#include "camera.h"
+#include "scene_dialogue.h"
+#include "ui_panels.h"
 #include "game_rules.h"
 #include "battle_rules.h"
 #include "ui_helpers.h"
@@ -24,6 +27,7 @@ int main(void) {
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     float x = 0, z = 8;
+    camera_t cam = {0,8};
     char line[64];
     while (1) {
         joypad_poll();
@@ -97,6 +101,7 @@ int main(void) {
                 }
             }
         }
+        camera_follow(&cam,x,z);
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
         rdpq_clear(RGBA32(23, 38, 62, 255));
@@ -104,11 +109,12 @@ int main(void) {
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
         if (game_is_world(place)) {
-            rdpq_text_print(NULL, 1, 12, 58, "Explore the low-poly world");
+            rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
             if (place == 6 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
             if (place == 8 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Badge required.");
+            ui_panel(8,178,312,216);
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North gate + A: Continue");
         } else if (place == 1) {
@@ -124,6 +130,8 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 128, line);
             ui_meter(12, 137, 138, hp, starter_stats(starter).hp, RGBA32(84,205,94,255));
             ui_meter(166, 137, 138, enemy_hp, enemy_stats(place == BROCK).hp, RGBA32(220,117,72,255));
+            ui_hp_bar(205,99,hp,24);
+            ui_hp_bar(205,122,enemy_hp,place==2?18:30);
             if (battle_finished)
                 rdpq_text_print(NULL, 1, 12, 160, hp ? "YOU WIN! A: CONTINUE" : "FAINTED! A: RETRY");
             else
