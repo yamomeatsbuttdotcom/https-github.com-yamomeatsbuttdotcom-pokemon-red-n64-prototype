@@ -32,6 +32,24 @@ static void iso_box(float x,float y,float z,float w,float h,float d,
     iso_quad(e,c,g,i,side);
     iso_quad(a,b,c,e,top);
 }
+/* Readable landmark details inspired by the approved N64 visual reference.
+   All decoration is authored as small world-space polygon meshes. */
+static void iso_house_details(float x,float z,float w,float d,float h,
+                              float cx,float cz,color_t roof) {
+    /* Eaves, chimney, front door, and blue glass window panels. */
+    iso_box(x-0.3f,h,z-0.3f,w+0.6f,0.65f,d+0.6f,cx,cz,
+            roof,roof,RGBA32(103,61,62,255));
+    iso_box(x+w*0.20f,0,z+d,1.1f,2.1f,0.10f,cx,cz,
+            RGBA32(72,56,45,255),RGBA32(89,66,49,255),RGBA32(62,46,37,255));
+    iso_box(x+w*0.64f,2.0f,z+d,1.0f,1.05f,0.12f,cx,cz,
+            RGBA32(111,170,211,255),RGBA32(105,172,217,255),RGBA32(70,117,168,255));
+    iso_box(x+w*0.74f,h+0.65f,z+0.5f,0.7f,0.8f,0.7f,cx,cz,
+            RGBA32(132,117,104,255),RGBA32(153,138,124,255),RGBA32(113,98,89,255));
+}
+static void iso_flower(float x,float z,float cx,float cz) {
+    iso_box(x,0,z,0.45f,0.25f,0.45f,cx,cz,
+            RGBA32(240,194,66,255),RGBA32(219,156,51,255),RGBA32(198,143,49,255));
+}
 static void world3d_draw(int scene, float cx, float cz) {
     rdpq_set_mode_standard();
     rdpq_mode_combiner(RDPQ_COMBINER_FLAT);
@@ -80,6 +98,20 @@ static void world3d_draw(int scene, float cx, float cz) {
                 RGBA32(187,71,64,255),RGBA32(234,210,167,255),RGBA32(187,165,137,255));
         iso_box(5,0,4,4,3,4,cx,cz,
                 RGBA32(71,112,178,255),RGBA32(218,210,176,255),RGBA32(171,170,146,255));
+    }
+    /* Roofs and window details for houses and city landmarks. */
+    if (scene == 0 || scene == 4) {
+        iso_house_details(-9,-5,6,5,4,cx,cz,RGBA32(188,66,59,255));
+        iso_house_details(5,4,4,4,3,cx,cz,RGBA32(72,115,189,255));
+    }
+    if (scene == 4)
+        iso_house_details(5,-7,4,4,4,cx,cz,RGBA32(204,72,82,255));
+    /* Bright wildflowers on the edge of the path. */
+    if (scene == 0 || scene == 3 || scene == 4 || scene == 8) {
+        for (int i=0;i<4;i++) {
+            iso_flower(-3.2f, -8.0f + i*5.0f,cx,cz);
+            iso_flower(3.1f, -6.0f + i*4.0f,cx,cz);
+        }
     }
     /* Player represented by stacked 3D blocks until a mesh is added. */
     iso_box(cx,0,cz,0.9f,1.6f,0.9f,cx,cz,
