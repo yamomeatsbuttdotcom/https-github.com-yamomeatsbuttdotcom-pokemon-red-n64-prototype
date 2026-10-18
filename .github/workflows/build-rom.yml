@@ -1,7 +1,6 @@
 name: Build N64 ROM
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:
