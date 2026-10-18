@@ -11,6 +11,7 @@
 #include "battle_visuals.h"
 #include "lab_visuals.h"
 #include "end_visuals.h"
+#include "encounters.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -31,7 +32,7 @@ int main(void) {
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
-    int show_hint = 0;
+    int show_hint = 0, walk_steps = 0, wild_notice = 0;
     float x = 0, z = 8;
     camera_t cam = {0,8};
     char line[64];
@@ -42,7 +43,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; wild_notice = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -57,7 +58,15 @@ int main(void) {
             if (nx > 10) nx = 10;
             if (nz < -10) nz = -10;
             if (nz > 10) nz = 10;
-            if (!world_blocked(place, nx, nz)) { x = nx; z = nz; }
+            if (!world_blocked(place, nx, nz)) {
+                if (nx != x || nz != z) {
+                    walk_steps++;
+                    if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
+                        && walk_steps % 180 == 0) wild_notice = 120;
+                }
+                x = nx; z = nz;
+            }
+            if (wild_notice > 0) wild_notice--;
             /* Walk to the north end of the path, then interact to advance. */
             if (p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
@@ -137,6 +146,11 @@ int main(void) {
             if (place == 8 && badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Mt. Moon is just ahead.");
             if (show_hint) rdpq_text_print(NULL, 1, 12, 92, area_hint[place]);
+            if (wild_notice > 0) {
+                encounter_t wild = area_encounter(place, walk_steps);
+                snprintf(line, sizeof(line), "Wild %s Lv.%d nearby!", wild.name, wild.level);
+                rdpq_text_print(NULL, 1, 12, 111, line);
+            }
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North + A: Next  B: Hint");
         } else if (place == 1) {
