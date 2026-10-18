@@ -50,7 +50,7 @@ int main(void) {
             /* Walk to the north end of the path, then interact to advance. */
             if (p.a && z < -7.0f) {
                 if (place == 0) place = 1;
-                else if (place == 6 && !badge) place = 7;
+                else if (place == 6) place = badge ? 8 : 7;
                 else if (place == 8 && badge) place = 9;
                 else if (place != 6 && place != 8) place++;
                 reset_position(&x, &z);
