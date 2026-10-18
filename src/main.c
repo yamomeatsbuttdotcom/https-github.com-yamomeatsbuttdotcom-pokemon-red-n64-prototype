@@ -68,6 +68,7 @@ int main(void) {
             if (p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
                 reset_position(&x, &z);
+                camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
                     hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
                     battle_turn = 0; battle_finished = 0;
@@ -86,7 +87,7 @@ int main(void) {
                     if (hp > 0) {
                         if (place == 2) rival_won = 1;
                         if (place == 7) badge = 1;
-                        place++; reset_position(&x, &z);
+                        place++; reset_position(&x, &z); camera_snap(&cam, x, z);
                     } else {
                         hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
                         battle_finished = 0; battle_turn = 0;
