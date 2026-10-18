@@ -7,6 +7,7 @@
 #include "game_rules.h"
 #include "battle_rules.h"
 #include "ui_helpers.h"
+#include "world_collision.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -49,21 +50,7 @@ int main(void) {
             if (nx > 10) nx = 10;
             if (nz < -10) nz = -10;
             if (nz > 10) nz = 10;
-            /* Scene-aware collision for landmarks and trees. */
-            int blocked = 0;
-            if (place == 0 || place == 4 || place == 6) {
-                if (nx > -9.5f && nx < -2.5f && nz > -5.5f && nz < 0.5f) blocked = 1;
-                if (nx > 4.5f && nx < 9.5f && nz > 3.5f && nz < 8.5f) blocked = 1;
-                if (place == 4 && nx > 4.5f && nx < 9.5f && nz > -7.5f && nz < -2.5f) blocked = 1;
-            } else if (place == 5) {
-                for (int i = 0; i < 5; i++) {
-                    float tz = -9.0f + i * 4.0f;
-                    float tx = (i & 1) ? 6.0f : -8.0f;
-                    if (nx > tx-1.5f && nx < tx+2.5f && nz > tz-1.5f && nz < tz+2.5f)
-                        blocked = 1;
-                }
-            }
-            if (!blocked) { x = nx; z = nz; }
+            if (!world_blocked(place, nx, nz)) { x = nx; z = nz; }
             /* Walk to the north end of the path, then interact to advance. */
             if (p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
