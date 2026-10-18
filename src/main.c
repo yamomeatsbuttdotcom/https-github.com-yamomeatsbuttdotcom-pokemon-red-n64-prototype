@@ -35,6 +35,7 @@ int main(void) {
     int show_hint = 0, walk_steps = 0, area_steps = 0;
     int wild_active = 0, wild_hp = 0, wild_max_hp = 0, wild_wins = 0;
     int last_wild_result = 0, result_frames = 0;
+    int trainer_message = 0;
     encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
     camera_t cam = {0,8};
@@ -46,7 +47,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0; trainer_message = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -90,7 +91,7 @@ int main(void) {
                 if (game_is_battle(place)) {
                     if (hp < 1) hp = starter_stats(starter).hp;
                     enemy_hp = enemy_stats(place == BROCK).hp;
-                    battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
+                    battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5; trainer_message = 0;
                 }
             }
         } else if (!p.start && wild_active) {
@@ -146,15 +147,19 @@ int main(void) {
                             hp += 12;
                             if (hp > starter_stats(starter).hp) hp = starter_stats(starter).hp;
                             potions--;
-                        } else used_turn = 0;
+                            trainer_message = 3;
+                        } else { used_turn = 0; trainer_message = 4; }
                     } else {
                         int damage = battle_damage(starter_stats(starter).attack,
                                                    enemy_stats(place == BROCK).defense);
                         if (battle_choice == 1) {
-                            if (special_pp > 0) { damage += 2; special_pp--; }
-                            else used_turn = 0;
+                            if (special_pp > 0) { damage += 2; special_pp--; trainer_message = 2; }
+                            else { used_turn = 0; trainer_message = 5; }
                         }
-                        if (used_turn) enemy_hp -= damage;
+                        if (used_turn) {
+                            enemy_hp -= damage;
+                            if (battle_choice == 0) trainer_message = 1;
+                        }
                         if (enemy_hp <= 0) { enemy_hp = 0; battle_finished = 1; }
                     }
                     if (used_turn) {
@@ -230,6 +235,8 @@ int main(void) {
                 rdpq_text_print(NULL, 1, 12, 160, line);
                 snprintf(line, sizeof(line), "POTION %d  SPECIAL PP %d", potions, special_pp);
                 rdpq_text_print(NULL, 1, 12, 177, line);
+                const char *battle_messages[] = {"CHOOSE YOUR MOVE", "A SOLID HIT!", "SPECIAL ATTACK!", "POTION RESTORED HP!", "CANNOT USE POTION", "NO SPECIAL PP LEFT"};
+                rdpq_text_print(NULL, 1, 12, 194, battle_messages[trainer_message]);
             }
         } else {
             rdpq_text_print(NULL, 1, 12, 95, "MT. MOON ENTRANCE BLOCKED");
