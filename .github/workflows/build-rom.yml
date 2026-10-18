@@ -6,29 +6,32 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout game
         uses: actions/checkout@v4
 
-      - name: Authenticate to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Checkout libdragon
+        uses: actions/checkout@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          repository: DragonMinded/libdragon
+          ref: trunk
+          path: libdragon-sdk
 
-      - name: Build ROM with libdragon Docker SDK
+      - name: Build libdragon toolchain image from source
+        run: docker build -t local-libdragon-toolchain ./libdragon-sdk
+
+      - name: Build libdragon SDK and game ROM
         run: |
           docker run --rm \
-            -v "$PWD:/game" \
-            -w /game \
-            ghcr.io/dragonminded/libdragon:latest \
-            sh -ec 'git clone --depth 1 --branch trunk https://github.com/DragonMinded/libdragon.git /tmp/libdragon && cd /tmp/libdragon && ./build.sh && cd /game && make'
+            -v "$PWD:/workspace" \
+            -w /workspace/libdragon-sdk \
+            local-libdragon-toolchain \
+            sh -ec './build.sh && cd /workspace && make'
 
       - name: Verify ROM exists
         run: |
