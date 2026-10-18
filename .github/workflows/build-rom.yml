@@ -14,6 +14,9 @@ jobs:
       - name: Checkout game
         uses: actions/checkout@v4
 
+      - name: Run host gameplay regression tests
+        run: sh tools/run_logic_tests.sh
+
       - name: Checkout libdragon
         uses: actions/checkout@v4
         with:
