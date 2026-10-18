@@ -17,10 +17,11 @@ int main(void) {
     rdpq_text_register_font(1, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_VAR));
     int scene = 0, starter = 0;
     int px = 154, py = 130;
+    int wins = 0;
     while (1) {
         joypad_poll();
         joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD_PORT_1);
-        if (pressed.start) { scene = 0; starter = 0; px = 154; py = 130; }
+        if (pressed.start) { scene = 0; starter = 0; px = 154; py = 130; wins = 0; }
         joypad_buttons_t held = joypad_get_buttons_held(JOYPAD_PORT_1);
         if (scene != 1) {
             if (held.d_left) px -= 2;
@@ -34,7 +35,12 @@ int main(void) {
         if (py > 166) py = 166;
         if (scene == 1 && pressed.d_left) starter = (starter + 2) % 3;
         if (scene == 1 && pressed.d_right) starter = (starter + 1) % 3;
-        if (pressed.a && scene < NUM_SCENES - 1) scene++;
+        if (pressed.a && scene < NUM_SCENES - 1) {
+            if (scene == 2 || scene == 7) wins++;
+            scene++;
+            px = 154;
+            py = 130;
+        }
         if (pressed.b && scene > 0) scene--;
 
         surface_t *disp = display_get();
@@ -67,8 +73,11 @@ int main(void) {
             rdpq_text_print(NULL, 1, 16, 88, "Rival battle (placeholder)");
         else if (scene == 7)
             rdpq_text_print(NULL, 1, 16, 88, "Brock battle (placeholder)");
-        else if (scene == 9)
+        else if (scene == 9) {
             rdpq_text_print(NULL, 1, 16, 88, "Cave blocked. Demo ends.");
+            if (wins == 2)
+                rdpq_text_print(NULL, 1, 16, 112, "Rival + Brock cleared!");
+        }
         else
             rdpq_text_print(NULL, 1, 16, 76, "Explore onward!");
         rdpq_text_print(NULL, 1, 16, 190, "A: Next   B: Back");
