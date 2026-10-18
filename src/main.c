@@ -32,7 +32,7 @@ int main(void) {
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
-    int show_hint = 0, walk_steps = 0, area_steps = 0;
+    int show_hint = 0, area_steps = 0;
     int wild_active = 0, wild_hp = 0, wild_max_hp = 0, wild_wins = 0;
     int last_wild_result = 0, result_frames = 0;
     int trainer_message = 0;
@@ -48,7 +48,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0; trainer_message = 0; encounter_number = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0; trainer_message = 0; encounter_number = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -70,7 +70,6 @@ int main(void) {
             if (nz > 10) nz = 10;
             if (!world_blocked(place, nx, nz)) {
                 if (nx != x || nz != z) {
-                    walk_steps++;
                     area_steps++;
                     if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
                         && area_steps >= 65) {
