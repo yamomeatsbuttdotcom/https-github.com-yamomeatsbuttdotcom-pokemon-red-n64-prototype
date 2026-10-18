@@ -88,7 +88,7 @@ int main(void) {
                 reset_position(&x, &z);
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
-                    hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
+                    enemy_hp = enemy_stats(place == BROCK).hp;
                     battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
                 }
             }
