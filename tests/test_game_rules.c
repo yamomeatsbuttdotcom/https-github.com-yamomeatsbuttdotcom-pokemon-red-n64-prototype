@@ -38,5 +38,7 @@ int main(void) {
     progress.boulder_badge=1;
     assert(next_area(AREA_PEWTER,&progress)==AREA_ROUTE3);
     assert(next_area(AREA_ROUTE3,&progress)==AREA_MOON);
+    assert(next_area(-4,&progress)==AREA_PALLET);
+    assert(next_area(AREA_MOON,&progress)==AREA_MOON);
     return 0;
 }
