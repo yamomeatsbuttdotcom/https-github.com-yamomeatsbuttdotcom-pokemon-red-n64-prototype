@@ -33,6 +33,8 @@ int main(void) {
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
     int show_hint = 0, walk_steps = 0, wild_notice = 0;
+    int wild_active = 0, wild_hp = 0, wild_max_hp = 0;
+    encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
     camera_t cam = {0,8};
     char line[64];
@@ -43,11 +45,11 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; wild_notice = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; wild_notice = 0; wild_active = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
-        if (game_is_world(place)) {
+        if (game_is_world(place) && !wild_active) {
             if (p.b) show_hint = !show_hint;
             float nx = x, nz = z;
             if (h.d_left) nx -= 0.15f;
@@ -62,7 +64,13 @@ int main(void) {
                 if (nx != x || nz != z) {
                     walk_steps++;
                     if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
-                        && walk_steps % 180 == 0) wild_notice = 120;
+                        && walk_steps % 180 == 0) {
+                        wild_notice = 0;
+                        wild_foe = area_encounter(place, walk_steps);
+                        wild_hp = wild_foe.hp; wild_max_hp = wild_hp;
+                        wild_active = 1;
+                        battle_choice = 0; battle_turn = 0;
+                    }
                 }
                 x = nx; z = nz;
             }
@@ -76,6 +84,12 @@ int main(void) {
                     hp = starter_stats(starter).hp; enemy_hp = enemy_stats(place == BROCK).hp;
                     battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
                 }
+            }
+        } else if (wild_active) {
+            if (p.b) wild_active = 0;
+            if (p.a) {
+                wild_hp -= battle_damage(starter_stats(starter).attack, 2);
+                if (wild_hp <= 0) wild_active = 0;
             }
         } else if (place == 1) {
             if (p.d_left) starter = (starter + 2) % 3;
@@ -133,13 +147,20 @@ int main(void) {
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
         rdpq_clear(RGBA32(23, 38, 62, 255));
-        if (game_is_world(place)) world3d_draw(place, x, z, cam.x, cam.z);
+        if (game_is_world(place) && !wild_active) world3d_draw(place, x, z, cam.x, cam.z);
         rdpq_set_mode_standard();
         if (place == 1) lab_draw(starter);
         if (place == 9) moon_gate_draw();
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
-        if (game_is_world(place)) {
+        if (wild_active) {
+            battle_creature(75,95,starter,1);
+            battle_creature(251,83,3,0);
+            snprintf(line,sizeof(line),"WILD %s Lv.%d",wild_foe.name,wild_foe.level);
+            rdpq_text_print(NULL,1,12,78,line);
+            ui_meter(166,137,138,wild_hp,wild_max_hp,RGBA32(220,117,72,255));
+            rdpq_text_print(NULL,1,12,161,"A: ATTACK  B: RUN");
+        } else if (game_is_world(place)) {
             rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
             if (place == 6 && !badge)
                 rdpq_text_print(NULL, 1, 12, 75, "Find Brock's gym!");
