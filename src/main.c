@@ -49,7 +49,7 @@ int main(void) {
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
-        if (game_is_world(place) && !wild_active) {
+        if (!p.start && game_is_world(place) && !wild_active) {
             if (p.b) show_hint = !show_hint;
             float nx = x, nz = z;
             if (h.d_left) nx -= 0.15f;
@@ -74,7 +74,7 @@ int main(void) {
                 x = nx; z = nz;
             }
             /* Walk to the north end of the path, then interact to advance. */
-            if (p.a && z < -7.0f) {
+            if (!wild_active && p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
                 reset_position(&x, &z);
                 camera_snap(&cam, x, z);
@@ -83,7 +83,7 @@ int main(void) {
                     battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
                 }
             }
-        } else if (wild_active) {
+        } else if (!p.start && wild_active) {
             if (p.b) {
                 wild_active = 0;
             } else if (p.a) {
@@ -102,14 +102,14 @@ int main(void) {
                     }
                 }
             }
-        } else if (place == 1) {
+        } else if (!p.start && place == 1) {
             if (p.d_left) starter = (starter + 2) % 3;
             if (p.d_right) starter = (starter + 1) % 3;
             if (p.a) {
                 place = RIVAL; hp = starter_stats(starter).hp; enemy_hp = enemy_stats(0).hp;
                 battle_turn = 0; battle_finished = 0; battle_choice = 0; special_pp = 5;
             }
-        } else if (game_is_battle(place)) {
+        } else if (!p.start && game_is_battle(place)) {
             if (!battle_finished) {
                 if (p.d_left || p.d_up) battle_choice = (battle_choice + 2) % 3;
                 if (p.d_right || p.d_down) battle_choice = (battle_choice + 1) % 3;
@@ -165,10 +165,10 @@ int main(void) {
         rdpq_text_print(NULL, 1, 12, 18, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 12, 37, places[place]);
         if (wild_active) {
-            battle_creature(75,95,starter,1);
-            battle_creature(251,83,3,0);
+            battle_creature(75,91,starter,1);
+            battle_creature(251,80,3,0);
             snprintf(line,sizeof(line),"WILD %s Lv.%d",wild_foe.name,wild_foe.level);
-            rdpq_text_print(NULL,1,12,78,line);
+            rdpq_text_print(NULL,1,12,65,line);
             ui_meter(12,137,138,hp,starter_stats(starter).hp,RGBA32(84,205,94,255));
             ui_meter(166,137,138,wild_hp,wild_max_hp,RGBA32(220,117,72,255));
             rdpq_text_print(NULL,1,12,161,"A: ATTACK  B: RUN");
@@ -187,13 +187,13 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 192, "LEFT/RIGHT: Choose");
             rdpq_text_print(NULL, 1, 12, 207, "A: Confirm");
         } else if (game_is_battle(place)) {
-            battle_creature(75,95,starter,1);
-            battle_creature(251,83,place==7?3:(starter+1)%3,0);
-            rdpq_text_print(NULL, 1, 12, 79, opponents[place == 2 ? 0 : 1]);
+            battle_creature(75,91,starter,1);
+            battle_creature(251,80,place==7?3:(starter+1)%3,0);
+            rdpq_text_print(NULL, 1, 12, 65, opponents[place == 2 ? 0 : 1]);
             snprintf(line, sizeof(line), "YOUR %s HP: %d", starters[starter], hp);
-            rdpq_text_print(NULL, 1, 12, 105, line);
+            rdpq_text_print(NULL, 1, 12, 121, line);
             snprintf(line, sizeof(line), "FOE HP: %d", enemy_hp);
-            rdpq_text_print(NULL, 1, 12, 128, line);
+            rdpq_text_print(NULL, 1, 166, 121, line);
             ui_meter(12, 137, 138, hp, starter_stats(starter).hp, RGBA32(84,205,94,255));
             ui_meter(166, 137, 138, enemy_hp, enemy_stats(place == BROCK).hp, RGBA32(220,117,72,255));
             if (battle_finished)
