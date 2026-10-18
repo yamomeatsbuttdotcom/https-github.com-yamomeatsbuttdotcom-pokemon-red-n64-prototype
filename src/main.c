@@ -37,12 +37,17 @@ int main(void) {
         if (scene == 1 && pressed.d_left) starter = (starter + 2) % 3;
         if (scene == 1 && pressed.d_right) starter = (starter + 1) % 3;
         if (pressed.a && scene < NUM_SCENES - 1) {
-            if (scene == 2 || scene == 7) wins++;
+            if (scene == 2 && wins < 1) wins = 1;
+            if (scene == 7 && wins < 2) wins = 2;
             scene++;
             px = 154;
             py = 130;
         }
-        if (pressed.b && scene > 0) scene--;
+        if (pressed.b && scene > 0) {
+            scene--;
+            if (scene <= 2) wins = 0;
+            else if (scene <= 7 && wins > 1) wins = 1;
+        }
 
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
