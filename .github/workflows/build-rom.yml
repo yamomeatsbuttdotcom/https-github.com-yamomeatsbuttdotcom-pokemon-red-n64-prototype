@@ -1,4 +1,5 @@
 name: Build N64 ROM
+
 on:
   push:
   workflow_dispatch:
@@ -8,13 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/dragonminded/libdragon:latest
     steps:
-      - name: Checkout
+      - name: Checkout game
         uses: actions/checkout@v4
-      - name: Build ROM
+
+      - name: Install libdragon SDK
+        run: |
+          git clone --depth 1 --branch trunk https://github.com/DragonMinded/libdragon.git /tmp/libdragon
+          cd /tmp/libdragon
+          ./build.sh
+
+      - name: Compile ROM
         run: make
+
+      - name: Verify ROM exists
+        run: |
+          test -s pallet_mt_moon.z64
+          file pallet_mt_moon.z64
+          ls -lh pallet_mt_moon.z64
+
       - name: Upload ROM
         uses: actions/upload-artifact@v4
         with:
           name: pallet-mt-moon-rom
-          path: '*.z64'
+          path: pallet_mt_moon.z64
           if-no-files-found: error
