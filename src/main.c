@@ -8,6 +8,7 @@
 #include "battle_rules.h"
 #include "ui_helpers.h"
 #include "world_collision.h"
+#include "battle_visuals.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -112,6 +113,8 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 192, "LEFT/RIGHT: Choose");
             rdpq_text_print(NULL, 1, 12, 207, "A: Confirm");
         } else if (game_is_battle(place)) {
+            battle_creature(75,95,starter,1);
+            battle_creature(251,83,place==7?3:(starter+1)%3,0);
             rdpq_text_print(NULL, 1, 12, 79, opponents[place == 2 ? 0 : 1]);
             snprintf(line, sizeof(line), "YOUR %s HP: %d", starters[starter], hp);
             rdpq_text_print(NULL, 1, 12, 105, line);
