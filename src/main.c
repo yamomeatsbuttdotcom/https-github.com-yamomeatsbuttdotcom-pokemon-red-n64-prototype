@@ -193,6 +193,8 @@ int main(void) {
             rdpq_text_print(NULL,1,12,121,line);
             ui_meter(12,137,138,hp,starter_stats(starter).hp,RGBA32(84,205,94,255));
             ui_meter(166,137,138,wild_hp,wild_max_hp,RGBA32(220,117,72,255));
+            snprintf(line,sizeof(line),"FOE HP %d / %d",wild_hp,wild_max_hp);
+            rdpq_text_print(NULL,1,166,121,line);
             rdpq_text_print(NULL,1,12,161,"A: ATTACK  B: RUN");
         } else if (game_is_world(place)) {
             rdpq_text_print(NULL, 1, 12, 58, area_greeting[place]);
