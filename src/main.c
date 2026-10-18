@@ -32,7 +32,7 @@ int main(void) {
     int place = 0, starter = 0, hp = 26, enemy_hp = 0;
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
-    int show_hint = 0, walk_steps = 0;
+    int show_hint = 0, walk_steps = 0, area_steps = 0;
     int wild_active = 0, wild_hp = 0, wild_max_hp = 0;
     encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
@@ -45,7 +45,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; wild_active = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -63,8 +63,10 @@ int main(void) {
             if (!world_blocked(place, nx, nz)) {
                 if (nx != x || nz != z) {
                     walk_steps++;
+                    area_steps++;
                     if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
-                        && walk_steps % 65 == 0) {
+                        && area_steps >= 65) {
+                        area_steps = 0;
                         wild_foe = area_encounter(place, walk_steps);
                         wild_hp = wild_foe.hp; wild_max_hp = wild_hp;
                         wild_active = 1;
@@ -76,6 +78,7 @@ int main(void) {
             /* Walk to the north end of the path, then interact to advance. */
             if (!wild_active && p.a && z < -7.0f) {
                 place = game_next_place(place, badge);
+                area_steps = 0;
                 reset_position(&x, &z);
                 camera_snap(&cam, x, z);
                 if (game_is_battle(place)) {
