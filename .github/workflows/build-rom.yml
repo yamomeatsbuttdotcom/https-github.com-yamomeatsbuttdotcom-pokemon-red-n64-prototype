@@ -1,0 +1,20 @@
+name: Build N64 ROM
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/dragonminded/libdragon:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build ROM
+        run: make
+      - name: Upload ROM
+        uses: actions/upload-artifact@v4
+        with:
+          name: pallet-mt-moon-rom
+          path: '*.z64'
+          if-no-files-found: error
