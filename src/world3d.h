@@ -40,11 +40,42 @@ static void world3d_draw(int scene, float cx, float cz) {
             RGBA32(69,153,76,255),RGBA32(46,100,49,255),RGBA32(36,83,43,255));
     iso_box(-2,0,-12,4,0.05f,24,cx,cz,
             RGBA32(199,176,118,255),RGBA32(153,127,85,255),RGBA32(158,132,89,255));
-    /* Landmark geometry varies between towns, forests and gym. */
-    if (scene == 5) {
-        iso_box(-8,0,-6,2,4,2,cx,cz,RGBA32(36,105,47,255),RGBA32(26,82,36,255),RGBA32(30,90,40,255));
-        iso_box(6,0,3,2,5,2,cx,cz,RGBA32(39,117,50,255),RGBA32(29,88,37,255),RGBA32(33,95,41,255));
-    } else {
+    /* Each chapter gets its own landmark geometry. */
+    if (scene == 5) { /* Viridian Forest: staggered trees */
+        for (int i=0; i<5; i++) {
+            float tz = -9.0f + i*4.0f;
+            float tx = (i&1) ? 6.0f : -8.0f;
+            iso_box(tx,0,tz,1.0f,3.0f,1.0f,cx,cz,
+                    RGBA32(111,79,45,255),RGBA32(101,69,39,255),RGBA32(79,54,34,255));
+            iso_box(tx-1.0f,3.0f,tz-1.0f,3.0f,2.5f,3.0f,cx,cz,
+                    RGBA32(43,131,53,255),RGBA32(33,99,44,255),RGBA32(29,84,39,255));
+        }
+    } else if (scene == 6) { /* Pewter: stone gym */
+        iso_box(-9,0,-6,7,5,6,cx,cz,
+                RGBA32(116,126,132,255),RGBA32(172,170,155,255),RGBA32(134,137,136,255));
+        iso_box(-6,0,0,2,2,0.5f,cx,cz,
+                RGBA32(79,79,89,255),RGBA32(64,65,75,255),RGBA32(59,61,71,255));
+        iso_box(6,0,3,3,2,3,cx,cz,
+                RGBA32(113,109,102,255),RGBA32(152,146,131,255),RGBA32(122,117,107,255));
+    } else if (scene == 3 || scene == 8) { /* Route 1 and Route 3 */
+        for (int i=0;i<4;i++) {
+            float tz = -8.0f + i*5.0f;
+            iso_box(-7,0,tz,2,1.0f,2,cx,cz,
+                    RGBA32(42,130,52,255),RGBA32(32,100,42,255),RGBA32(28,88,38,255));
+            iso_box(6,0,tz+2,2,1.0f,2,cx,cz,
+                    RGBA32(42,130,52,255),RGBA32(32,100,42,255),RGBA32(28,88,38,255));
+        }
+        if (scene == 8)
+            iso_box(7,0,-7,3,3,3,cx,cz,
+                    RGBA32(133,119,101,255),RGBA32(112,100,87,255),RGBA32(95,86,77,255));
+    } else if (scene == 4) { /* Viridian City */
+        iso_box(-9,0,-5,6,4,5,cx,cz,
+                RGBA32(189,69,73,255),RGBA32(228,211,182,255),RGBA32(188,167,146,255));
+        iso_box(5,0,4,4,3,4,cx,cz,
+                RGBA32(74,112,181,255),RGBA32(218,210,176,255),RGBA32(171,170,146,255));
+        iso_box(5,0,-7,4,4,4,cx,cz,
+                RGBA32(209,80,87,255),RGBA32(229,218,199,255),RGBA32(181,175,155,255));
+    } else { /* Pallet Town */
         iso_box(-9,0,-5,6,4,5,cx,cz,
                 RGBA32(187,71,64,255),RGBA32(234,210,167,255),RGBA32(187,165,137,255));
         iso_box(5,0,4,4,3,4,cx,cz,
