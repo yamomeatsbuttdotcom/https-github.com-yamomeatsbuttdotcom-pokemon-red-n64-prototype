@@ -17,6 +17,8 @@ int main(void) {
     assert(!game_is_world(BROCK));
     assert(starter_stats(1).attack>starter_stats(2).attack);
     assert(battle_damage(1,100)==1);
+    assert(battle_damage(-3,5)==1);
+    assert(battle_damage(7,-2)==7);
     assert(area_encounter(FOREST,0).level==4);
     assert(area_encounter(FOREST,65).level==5);
     assert(area_encounter(ROUTE3,65).level==5);
