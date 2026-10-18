@@ -33,7 +33,7 @@ int main(void) {
     int badge = 0, rival_won = 0, battle_turn = 0, battle_finished = 0;
     int battle_choice = 0, potions = 3, special_pp = 5;
     int show_hint = 0, walk_steps = 0, area_steps = 0;
-    int wild_active = 0, wild_hp = 0, wild_max_hp = 0;
+    int wild_active = 0, wild_hp = 0, wild_max_hp = 0, wild_wins = 0;
     encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
     camera_t cam = {0,8};
@@ -45,7 +45,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -94,6 +94,7 @@ int main(void) {
                 if (wild_hp <= 0) {
                     wild_hp = 0;
                     wild_active = 0;
+                    wild_wins++;
                 } else {
                     hp -= battle_damage(4 + wild_foe.level / 2,
                                         starter_stats(starter).defense);
@@ -184,6 +185,8 @@ int main(void) {
             if (show_hint) rdpq_text_print(NULL, 1, 12, 92, area_hint[place]);
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North + A: Next  B: Hint");
+            snprintf(line, sizeof(line), "WILD WINS: %d", wild_wins);
+            rdpq_text_print(NULL, 1, 204, 58, line);
         } else if (place == 1) {
             rdpq_text_print(NULL, 1, 12, 82, "Professor: Choose a partner!");
             rdpq_text_print(NULL, 1, 12, 109, starters[starter]);
