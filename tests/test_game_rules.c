@@ -11,10 +11,16 @@ int main(void) {
     assert(game_next_place(ROUTE3,1)==MOON);
     assert(game_next_place(ROUTE3,0)==ROUTE3);
     assert(game_is_world(FOREST));
+    assert(!game_is_world(-1));
+    assert(!game_is_world(99));
+    assert(game_next_place(-1,0)==PALLET);
     assert(!game_is_world(BROCK));
     assert(starter_stats(1).attack>starter_stats(2).attack);
     assert(battle_damage(1,100)==1);
     assert(area_encounter(FOREST,0).level==4);
+    assert(area_encounter(FOREST,65).level==5);
+    assert(area_encounter(ROUTE3,65).level==5);
+    assert(area_encounter(ROUTE1,-1).level==3);
     assert(world_blocked(PALLET,-6,-3));
     assert(!world_blocked(PALLET,0,5));
     assert(world_blocked(FOREST,-8,-9));
