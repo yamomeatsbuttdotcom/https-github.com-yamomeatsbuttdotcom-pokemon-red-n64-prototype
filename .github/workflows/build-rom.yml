@@ -57,18 +57,30 @@ jobs:
             local-libdragon-toolchain \
             sh -ec './build.sh && cd /workspace && make'
 
+      - name: Build minimal boot probe ROM
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            local-libdragon-toolchain \
+            sh -ec 'make BOOT_PROBE=1 ROMNAME=boot_probe BUILD_DIR=build_probe'
+
       - name: Verify ROM exists
         run: |
           test -s pallet_mt_moon.z64
           file pallet_mt_moon.z64
-          ls -lh pallet_mt_moon.z64
+          ls -lh pallet_mt_moon.z64 boot_probe.z64
 
       - name: Validate N64 ROM structure
-        run: python3 tools/check_rom.py pallet_mt_moon.z64
+        run: |
+          python3 tools/check_rom.py pallet_mt_moon.z64
+          python3 tools/check_rom.py boot_probe.z64
 
       - name: Upload ROM
         uses: actions/upload-artifact@v4
         with:
           name: pallet-mt-moon-rom
-          path: pallet_mt_moon.z64
+          path: |
+            pallet_mt_moon.z64
+            boot_probe.z64
           if-no-files-found: error
