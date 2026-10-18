@@ -64,7 +64,7 @@ int main(void) {
                 if (nx != x || nz != z) {
                     walk_steps++;
                     if ((place == ROUTE1 || place == FOREST || place == ROUTE3)
-                        && walk_steps % 180 == 0) {
+                        && walk_steps % 65 == 0) {
                         wild_notice = 0;
                         wild_foe = area_encounter(place, walk_steps);
                         wild_hp = wild_foe.hp; wild_max_hp = wild_hp;
@@ -158,6 +158,7 @@ int main(void) {
             battle_creature(251,83,3,0);
             snprintf(line,sizeof(line),"WILD %s Lv.%d",wild_foe.name,wild_foe.level);
             rdpq_text_print(NULL,1,12,78,line);
+            ui_meter(12,137,138,hp,starter_stats(starter).hp,RGBA32(84,205,94,255));
             ui_meter(166,137,138,wild_hp,wild_max_hp,RGBA32(220,117,72,255));
             rdpq_text_print(NULL,1,12,161,"A: ATTACK  B: RUN");
         } else if (game_is_world(place)) {
