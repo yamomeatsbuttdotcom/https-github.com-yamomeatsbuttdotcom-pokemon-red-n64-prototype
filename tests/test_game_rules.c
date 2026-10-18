@@ -10,6 +10,9 @@ int main(void) {
     assert(game_next_place(PEWTER,1)==ROUTE3);
     assert(game_next_place(ROUTE3,1)==MOON);
     assert(game_next_place(ROUTE3,0)==ROUTE3);
+    assert(game_next_place(ROUTE1,0)==VIRIDIAN);
+    assert(game_next_place(VIRIDIAN,0)==FOREST);
+    assert(game_next_place(FOREST,0)==PEWTER);
     assert(game_is_world(FOREST));
     assert(!game_is_world(-1));
     assert(!game_is_world(99));
