@@ -8,6 +8,7 @@ static int game_next_place(int place, int badge) {
     if (place == PALLET) return LAB;
     if (place == PEWTER) return badge ? ROUTE3 : BROCK;
     if (place == ROUTE3) return badge ? MOON : ROUTE3;
+    if (place < PALLET) return PALLET;
     if (place >= MOON) return MOON;
     return place + 1;
 }
