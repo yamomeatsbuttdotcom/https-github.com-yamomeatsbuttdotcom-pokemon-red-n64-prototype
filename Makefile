@@ -9,7 +9,11 @@ include $(N64_INST)/include/n64.mk
 all: $(ROMNAME).z64
 .PHONY: all
 
-C_FILES := $(shell find src -name '*.c')
+ifeq ($(BOOT_PROBE),1)
+C_FILES := src/boot_probe.c
+else
+C_FILES := $(filter-out src/boot_probe.c,$(shell find src -name '*.c'))
+endif
 OBJS := $(addprefix $(BUILD_DIR)/,$(C_FILES:.c=.o))
 $(BUILD_DIR)/$(ROMNAME).elf: $(OBJS)
 $(ROMNAME).z64: N64_ROM_TITLE = "Pallet to Mt Moon"
