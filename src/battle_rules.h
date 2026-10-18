@@ -12,6 +12,8 @@ static battle_stats_t enemy_stats(int gym) {
     return gym ? brock : rival;
 }
 static int battle_damage(int attack, int defense) {
+    if (attack < 0) attack = 0;
+    if (defense < 0) defense = 0;
     int amount = attack - defense / 2;
     return amount > 1 ? amount : 1;
 }
