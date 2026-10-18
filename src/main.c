@@ -21,10 +21,13 @@ int main(void) {
         joypad_poll();
         joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         if (pressed.start) { scene = 0; starter = 0; px = 154; py = 130; }
-        if (pressed.d_left) px -= 4;
-        if (pressed.d_right) px += 4;
-        if (pressed.d_up) py -= 4;
-        if (pressed.d_down) py += 4;
+        joypad_buttons_t held = joypad_get_buttons_held(JOYPAD_PORT_1);
+        if (scene != 1) {
+            if (held.d_left) px -= 2;
+            if (held.d_right) px += 2;
+            if (held.d_up) py -= 2;
+            if (held.d_down) py += 2;
+        }
         if (px < 12) px = 12;
         if (px > 300) px = 300;
         if (py < 92) py = 92;
@@ -55,7 +58,7 @@ int main(void) {
         rdpq_text_print(NULL, 1, 16, 24, "PALLET TO MT. MOON");
         rdpq_text_print(NULL, 1, 16, 56, scenes[scene]);
         if (scene == 0)
-            rdpq_text_print(NULL, 1, 16, 88, "Your adventure begins.");
+            rdpq_text_print(NULL, 1, 16, 76, "Your adventure begins.");
         else if (scene == 1) {
             rdpq_text_print(NULL, 1, 16, 88, "Choose your starter:");
             rdpq_text_print(NULL, 1, 16, 112, starters[starter]);
@@ -67,9 +70,10 @@ int main(void) {
         else if (scene == 9)
             rdpq_text_print(NULL, 1, 16, 88, "Cave blocked. Demo ends.");
         else
-            rdpq_text_print(NULL, 1, 16, 88, "Explore onward!");
-        rdpq_text_print(NULL, 1, 16, 185, "A: Next  B: Back  D: Move");
-        rdpq_text_print(NULL, 1, 16, 205, "START: Restart");
+            rdpq_text_print(NULL, 1, 16, 76, "Explore onward!");
+        rdpq_text_print(NULL, 1, 16, 190, "A: Next   B: Back");
+        rdpq_text_print(NULL, 1, 16, 207, "D-Pad: Move / Choose");
+        rdpq_text_print(NULL, 1, 16, 225, "START: Restart");
         rdpq_detach_show();
     }
 }
