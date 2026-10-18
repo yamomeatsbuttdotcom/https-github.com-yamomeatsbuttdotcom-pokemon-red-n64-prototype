@@ -4,22 +4,31 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/dragonminded/libdragon:latest
     steps:
       - name: Checkout game
         uses: actions/checkout@v4
 
-      - name: Install libdragon SDK
-        run: |
-          git clone --depth 1 --branch trunk https://github.com/DragonMinded/libdragon.git /tmp/libdragon
-          cd /tmp/libdragon
-          ./build.sh
+      - name: Authenticate to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Compile ROM
-        run: make
+      - name: Build ROM with libdragon Docker SDK
+        run: |
+          docker run --rm \
+            -v "$PWD:/game" \
+            -w /game \
+            ghcr.io/dragonminded/libdragon:latest \
+            sh -ec 'git clone --depth 1 --branch trunk https://github.com/DragonMinded/libdragon.git /tmp/libdragon && cd /tmp/libdragon && ./build.sh && cd /game && make'
 
       - name: Verify ROM exists
         run: |
