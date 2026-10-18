@@ -3,6 +3,7 @@
 #include "world3d.h"
 #include "game_rules.h"
 #include "battle_rules.h"
+#include "ui_helpers.h"
 
 /* Small original N64 adventure prototype, Pallet Town through Mt. Moon. */
 static const char *places[] = {
@@ -121,6 +122,8 @@ int main(void) {
             rdpq_text_print(NULL, 1, 12, 105, line);
             snprintf(line, sizeof(line), "FOE HP: %d", enemy_hp);
             rdpq_text_print(NULL, 1, 12, 128, line);
+            ui_meter(12, 137, 138, hp, starter_stats(starter).hp, RGBA32(84,205,94,255));
+            ui_meter(166, 137, 138, enemy_hp, enemy_stats(place == BROCK).hp, RGBA32(220,117,72,255));
             if (battle_finished)
                 rdpq_text_print(NULL, 1, 12, 160, hp ? "YOU WIN! A: CONTINUE" : "FAINTED! A: RETRY");
             else
