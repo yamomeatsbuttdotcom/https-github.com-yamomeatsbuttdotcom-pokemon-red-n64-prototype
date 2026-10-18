@@ -34,6 +34,7 @@ int main(void) {
     int battle_choice = 0, potions = 3, special_pp = 5;
     int show_hint = 0, walk_steps = 0, area_steps = 0;
     int wild_active = 0, wild_hp = 0, wild_max_hp = 0, wild_wins = 0;
+    int last_wild_result = 0, result_frames = 0;
     encounter_t wild_foe = {"PIDGEY", 3, 11};
     float x = 0, z = 8;
     camera_t cam = {0,8};
@@ -45,7 +46,7 @@ int main(void) {
         if (p.start) {
             place = 0; starter = 0; hp = starter_stats(0).hp; enemy_hp = 0;
             badge = 0; rival_won = 0; battle_turn = 0; battle_finished = 0;
-            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0;
+            battle_choice = 0; potions = 3; special_pp = 5; show_hint = 0; walk_steps = 0; area_steps = 0; wild_active = 0; wild_wins = 0; last_wild_result = 0; result_frames = 0;
             reset_position(&x, &z);
             camera_snap(&cam, x, z);
         }
@@ -89,18 +90,21 @@ int main(void) {
         } else if (!p.start && wild_active) {
             if (p.b) {
                 wild_active = 0;
+                last_wild_result = 2; result_frames = 90;
             } else if (p.a) {
                 wild_hp -= battle_damage(starter_stats(starter).attack, 2);
                 if (wild_hp <= 0) {
                     wild_hp = 0;
                     wild_active = 0;
                     wild_wins++;
+                    last_wild_result = 1; result_frames = 90;
                 } else {
                     hp -= battle_damage(4 + wild_foe.level / 2,
                                         starter_stats(starter).defense);
                     if (hp <= 0) {
                         hp = starter_stats(starter).hp;
                         wild_active = 0;
+                        last_wild_result = 3; result_frames = 120;
                         reset_position(&x, &z);
                         camera_snap(&cam, x, z);
                     }
@@ -158,6 +162,7 @@ int main(void) {
                 }
             }
         }
+        if (result_frames > 0) result_frames--;
         camera_follow(&cam,x,z);
         surface_t *disp = display_get();
         rdpq_attach(disp, NULL);
@@ -185,6 +190,10 @@ int main(void) {
             if (show_hint) rdpq_text_print(NULL, 1, 12, 92, area_hint[place]);
             rdpq_text_print(NULL, 1, 12, 192, "D-Pad: Walk");
             rdpq_text_print(NULL, 1, 12, 207, "North + A: Next  B: Hint");
+            if (result_frames > 0) {
+                const char *outcomes[] = {"", "WILD POKEMON DEFEATED!", "GOT AWAY SAFELY!", "FAINTED! RESTORED HP."};
+                rdpq_text_print(NULL, 1, 12, 111, outcomes[last_wild_result]);
+            }
             snprintf(line, sizeof(line), "WILD WINS: %d", wild_wins);
             rdpq_text_print(NULL, 1, 204, 58, line);
         } else if (place == 1) {
